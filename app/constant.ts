@@ -25,6 +25,7 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "",
+  Cloudflare = "",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
 }
@@ -66,6 +67,7 @@ export const REQUEST_TIMEOUT_MS = 60000;
 export const EXPORT_MESSAGE_CLASS_NAME = "export-markdown";
 
 export enum ServiceProvider {
+  Cloudflare = "Cloudflare",
   OpenAI = "OpenAI",
   Azure = "Azure",
   Google = "Google",
@@ -73,10 +75,18 @@ export enum ServiceProvider {
 }
 
 export enum ModelProvider {
+  Cloudflare = "cloudflare",
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",
 }
+
+export const CloudflarePath = {
+  ChatPath: "v1/chat/completions",
+  UsagePath: "dashboard/billing/usage",
+  SubsPath: "dashboard/billing/subscription",
+  ListModelPath: "v1/models",
+};
 
 export const Anthropic = {
   ChatPath: "v1/messages",
@@ -136,6 +146,8 @@ export const KnowledgeCutOffDate: Record<string, string> = {
   "gemini-pro-vision": "2023-12",
 };
 
+const cloudflareModels = ["@cf/meta/llama-3-8b-instruct"];
+
 const openaiModels = [
   "gpt-3.5-turbo",
   "gpt-3.5-turbo-1106",
@@ -168,8 +180,6 @@ const anthropicModels = [
   "claude-3-haiku-20240307",
   "claude-3-5-sonnet-20240620",
 ];
-
-const cloudflareModels = ["@cf/meta/llama-3-8b-instruct"];
 
 export const DEFAULT_MODELS = [
   ...cloudflareModels.map((name) => ({
