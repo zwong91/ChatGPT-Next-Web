@@ -71,7 +71,7 @@ export abstract class LLMApi {
   abstract models(): Promise<LLMModel[]>;
 }
 
-type ProviderName = "openai" | "azure" | "claude" | "palm";
+type ProviderName = "cloudflare" | "openai" | "azure" | "claude" | "palm";
 
 interface Model {
   name: string;
