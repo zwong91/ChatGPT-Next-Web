@@ -169,6 +169,8 @@ const anthropicModels = [
   "claude-3-5-sonnet-20240620",
 ];
 
+const cloudflareModels = ["@cf/meta/llama-3-8b-instruct"];
+
 export const DEFAULT_MODELS = [
   ...openaiModels.map((name) => ({
     name,
@@ -195,6 +197,15 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
+    },
+  })),
+  ...cloudflareModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "cloudflare",
+      providerName: "Cloudflare",
+      providerType: "cloudflare",
     },
   })),
 ] as const;
