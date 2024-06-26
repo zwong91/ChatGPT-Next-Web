@@ -172,6 +172,15 @@ const anthropicModels = [
 const cloudflareModels = ["@cf/meta/llama-3-8b-instruct"];
 
 export const DEFAULT_MODELS = [
+  ...cloudflareModels.map((name) => ({
+    name,
+    available: true,
+    provider: {
+      id: "cloudflare",
+      providerName: "Cloudflare",
+      providerType: "cloudflare",
+    },
+  })),
   ...openaiModels.map((name) => ({
     name,
     available: true,
@@ -197,15 +206,6 @@ export const DEFAULT_MODELS = [
       id: "anthropic",
       providerName: "Anthropic",
       providerType: "anthropic",
-    },
-  })),
-  ...cloudflareModels.map((name) => ({
-    name,
-    available: true,
-    provider: {
-      id: "cloudflare",
-      providerName: "Cloudflare",
-      providerType: "cloudflare",
     },
   })),
 ] as const;
