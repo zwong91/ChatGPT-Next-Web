@@ -143,6 +143,7 @@ export const useUpdateStore = createPersistStore(
       }));
 
       try {
+        // openai not support any more
         const api = new ClientApi(ModelProvider.GPT);
         const usage = await api.llm.usage();
 

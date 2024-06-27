@@ -92,6 +92,7 @@ export const getServerSideConfig = () => {
   const isAzure = !!process.env.AZURE_URL;
   const isGoogle = !!process.env.GOOGLE_API_KEY;
   const isAnthropic = !!process.env.ANTHROPIC_API_KEY;
+  const isCloudflare = !!process.env.CLOUDFLARE_API_KEY;
 
   // const apiKeyEnvVar = process.env.OPENAI_API_KEY ?? "";
   // const apiKeys = apiKeyEnvVar.split(",").map((v) => v.trim());
@@ -123,6 +124,13 @@ export const getServerSideConfig = () => {
     anthropicApiKey: getApiKey(process.env.ANTHROPIC_API_KEY),
     anthropicApiVersion: process.env.ANTHROPIC_API_VERSION,
     anthropicUrl: process.env.ANTHROPIC_URL,
+
+    isCloudflare,
+    cloudflareApiKey: getApiKey(process.env.CLOUDFLARE_API_KEY),
+    cloudflareApiVersion: process.env.CLOUDFLARE_API_VERSION,
+    cloudflareAccount: process.env.CLOUDFLARE_ACCOUNT,
+    cloudflareGateway: process.env.CLOUDFLARE_GATEWAY,
+    cloudflareUrl: process.env.CLOUDFLARE_URL,
 
     gtmId: process.env.GTM_ID,
 

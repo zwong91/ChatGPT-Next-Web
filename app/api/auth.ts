@@ -67,6 +67,9 @@ export function auth(req: NextRequest, modelProvider: ModelProvider) {
     let systemApiKey: string | undefined;
 
     switch (modelProvider) {
+      case ModelProvider.Cloudflare:
+        systemApiKey = serverConfig.cloudflareApiKey;
+        break;
       case ModelProvider.GeminiPro:
         systemApiKey = serverConfig.googleApiKey;
         break;

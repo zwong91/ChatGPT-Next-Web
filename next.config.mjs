@@ -82,6 +82,10 @@ if (mode !== "export") {
         destination: "https://api.anthropic.com/:path*",
       },
       {
+        source: "/api/proxy/cloudflare/:path*",
+        destination: "https://gateway.ai.cloudflare.com/:path*",
+      },
+      {
         source: "/google-fonts/:path*",
         destination: "https://fonts.googleapis.com/:path*",
       },

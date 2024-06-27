@@ -11,8 +11,8 @@ export const RUNTIME_CONFIG_DOM = "danger-runtime-config";
 export const DEFAULT_API_HOST = "https://api.nextchat.dev";
 export const OPENAI_BASE_URL = "https://api.openai.com";
 export const ANTHROPIC_BASE_URL = "https://api.anthropic.com";
-
 export const GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/";
+export const CLOUDFLARE_BASE_URL = "https://gateway.ai.cloudflare.com/";
 
 export enum Path {
   Home = "/",
@@ -25,7 +25,7 @@ export enum Path {
 
 export enum ApiPath {
   Cors = "",
-  Cloudflare = "",
+  Cloudflare = "/api/cloudflare",
   OpenAI = "/api/openai",
   Anthropic = "/api/anthropic",
 }
@@ -75,7 +75,7 @@ export enum ServiceProvider {
 }
 
 export enum ModelProvider {
-  Cloudflare = "cloudflare",
+  Cloudflare = "Cloudflare",
   GPT = "GPT",
   GeminiPro = "GeminiPro",
   Claude = "Claude",

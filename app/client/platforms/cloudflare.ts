@@ -3,7 +3,7 @@ import {
   ApiPath,
   DEFAULT_API_HOST,
   DEFAULT_MODELS,
-  OpenaiPath,
+  CloudflarePath,
   REQUEST_TIMEOUT_MS,
   ServiceProvider,
 } from "@/app/constant";
@@ -24,14 +24,13 @@ import {
 } from "@fortaine/fetch-event-source";
 import { prettyObject } from "@/app/utils/format";
 import { getClientConfig } from "@/app/config/client";
-import { makeAzurePath } from "@/app/azure";
 import {
   getMessageTextContent,
   getMessageImages,
   isVisionModel,
 } from "@/app/utils";
 
-export interface OpenAIListModelResponse {
+export interface CloudFlareListModelResponse {
   object: string;
   data: Array<{
     id: string;
@@ -61,34 +60,24 @@ export class CloudflareApi implements LLMApi {
     const accessStore = useAccessStore.getState();
 
     let baseUrl = "";
-
     if (accessStore.useCustomConfig) {
-      const isAzure = accessStore.provider === ServiceProvider.Azure;
-
-      if (isAzure && !accessStore.isValidAzure()) {
-        throw Error(
-          "incomplete azure config, please check it in your settings page",
-        );
-      }
-
-      if (isAzure) {
-        path = makeAzurePath(path, accessStore.azureApiVersion);
-      }
-
-      baseUrl = isAzure ? accessStore.azureUrl : accessStore.openaiUrl;
+      baseUrl = accessStore.cloudflareUrl;
     }
 
-    if (baseUrl.length === 0) {
+    if (!baseUrl) {
       const isApp = !!getClientConfig()?.isApp;
       baseUrl = isApp
-        ? DEFAULT_API_HOST + "/proxy" + ApiPath.OpenAI
+        ? DEFAULT_API_HOST + "/api/proxy/cloudflare/" + ApiPath.Cloudflare
         : ApiPath.Cloudflare;
     }
 
     if (baseUrl.endsWith("/")) {
       baseUrl = baseUrl.slice(0, baseUrl.length - 1);
     }
-    if (!baseUrl.startsWith("http") && !baseUrl.startsWith(ApiPath.OpenAI)) {
+    if (
+      !baseUrl.startsWith("http") &&
+      !baseUrl.startsWith(ApiPath.Cloudflare)
+    ) {
       baseUrl = "https://" + baseUrl;
     }
 
@@ -133,14 +122,14 @@ export class CloudflareApi implements LLMApi {
       requestPayload["max_tokens"] = Math.max(modelConfig.max_tokens, 4000);
     }
 
-    console.log("[Request] openai payload: ", requestPayload);
+    console.log("[Request] cloudflare payload: ", requestPayload);
 
     const shouldStream = !!options.config.stream;
     const controller = new AbortController();
     options.onController?.(controller);
 
     try {
-      const chatPath = this.path(OpenaiPath.ChatPath);
+      const chatPath = this.path(CloudflarePath.ChatPath);
       const chatPayload = {
         method: "POST",
         body: JSON.stringify(requestPayload),
@@ -199,7 +188,7 @@ export class CloudflareApi implements LLMApi {
             clearTimeout(requestTimeoutId);
             const contentType = res.headers.get("content-type");
             console.log(
-              "[OpenAI] request response content type: ",
+              "[CloudFlare] request response content type: ",
               contentType,
             );
 
@@ -305,14 +294,14 @@ export class CloudflareApi implements LLMApi {
     const [used, subs] = await Promise.all([
       fetch(
         this.path(
-          `${OpenaiPath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
+          `${CloudflarePath.UsagePath}?start_date=${startDate}&end_date=${endDate}`,
         ),
         {
           method: "GET",
           headers: getHeaders(),
         },
       ),
-      fetch(this.path(OpenaiPath.SubsPath), {
+      fetch(this.path(CloudflarePath.SubsPath), {
         method: "GET",
         headers: getHeaders(),
       }),
@@ -323,7 +312,7 @@ export class CloudflareApi implements LLMApi {
     }
 
     if (!used.ok || !subs.ok) {
-      throw new Error("Failed to query usage from openai");
+      throw new Error("Failed to query usage from cloudflare");
     }
 
     const response = (await used.json()) as {
@@ -361,15 +350,15 @@ export class CloudflareApi implements LLMApi {
       return DEFAULT_MODELS.slice();
     }
 
-    const res = await fetch(this.path(OpenaiPath.ListModelPath), {
+    const res = await fetch(this.path(CloudflarePath.ListModelPath), {
       method: "GET",
       headers: {
         ...getHeaders(),
       },
     });
 
-    const resJson = (await res.json()) as OpenAIListModelResponse;
-    const chatModels = resJson.data?.filter((m) => m.id.startsWith("gpt-"));
+    const resJson = (await res.json()) as CloudFlareListModelResponse;
+    const chatModels = resJson.data?.filter((m) => m.id.startsWith("@cf"));
     console.log("[Models]", chatModels);
 
     if (!chatModels) {
@@ -380,11 +369,11 @@ export class CloudflareApi implements LLMApi {
       name: m.id,
       available: true,
       provider: {
-        id: "openai",
-        providerName: "OpenAI",
-        providerType: "openai",
+        id: "cloudflare",
+        providerName: "CloudFlare",
+        providerType: "cloudflare",
       },
     }));
   }
 }
-export { OpenaiPath };
+export { CloudflarePath };

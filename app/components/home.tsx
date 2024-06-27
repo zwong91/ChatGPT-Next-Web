@@ -172,7 +172,9 @@ export function useLoadData() {
   const config = useAppConfig();
 
   var api: ClientApi;
-  if (config.modelConfig.model.startsWith("gemini")) {
+  if (config.modelConfig.model.startsWith("@cf")) {
+    api = new ClientApi(ModelProvider.Cloudflare);
+  } else if (config.modelConfig.model.startsWith("gemini")) {
     api = new ClientApi(ModelProvider.GeminiPro);
   } else if (identifyDefaultClaudeModel(config.modelConfig.model)) {
     api = new ClientApi(ModelProvider.Claude);

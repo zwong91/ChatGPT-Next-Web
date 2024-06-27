@@ -21,7 +21,7 @@ const DEFAULT_ACCESS_STATE = {
   accessCode: "",
   useCustomConfig: false,
 
-  provider: ServiceProvider.OpenAI,
+  provider: ServiceProvider.Cloudflare,
 
   // openai
   openaiUrl: DEFAULT_OPENAI_URL,
@@ -41,6 +41,11 @@ const DEFAULT_ACCESS_STATE = {
   anthropicApiKey: "",
   anthropicApiVersion: "2023-06-01",
   anthropicUrl: "",
+
+  // cloudflare ai
+  cloudflareUrl: "",
+  cloudflareApiKey: "",
+  cloudflareApiVersion: "v1",
 
   // server config
   needCode: true,
